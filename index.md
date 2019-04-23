@@ -1,3 +1,7 @@
+## Welcome to the Python Reference Page
+
+This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/ttron1691/coderef-python/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
