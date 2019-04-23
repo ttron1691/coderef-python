@@ -1,4 +1,4 @@
-## Welcome to the Python Reference Page
+# Welcome to the Python Reference Page
 
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
 
