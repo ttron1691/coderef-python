@@ -2,7 +2,13 @@
 
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
 
-## Welcome to GitHub Pages
+## Classes
+
+The basic syntax is given by
+
+```markdown
+`class ClassName:
+  pass`
 
 You can use the [editor on GitHub](https://github.com/ttron1691/coderef-python/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
