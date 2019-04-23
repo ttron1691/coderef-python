@@ -7,8 +7,10 @@ This code reference is supposed to give an overview about the syntax and the ele
 The basic syntax is given by
 
 ```markdown
-`class ClassName:
-  pass`
+class ClassName(object):
+    pass
+
+## New Section
 
 You can use the [editor on GitHub](https://github.com/ttron1691/coderef-python/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
