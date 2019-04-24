@@ -2,6 +2,16 @@
 
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
 
+## Functions
+The basic syntax is given by
+```Python
+def func(par):
+    """
+    Documentation of the function
+    """
+    return 0
+```
+
 ## Classes
 
 The basic syntax is given by
