@@ -8,6 +8,6 @@ The basic syntax is given by
 
 ```Python
 class ClassName(object):
-    def __init__(self, *args, **kwargs, par):
+    def __init__(self, par, *args, **kwargs):
         self.par = par
 ```
