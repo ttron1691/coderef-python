@@ -8,6 +8,9 @@ The basic syntax is given by
 
 ```Python
 class ClassName(object):
+    """
+    Documentation of the class
+    """
     def __init__(self, par, *args, **kwargs):
         self.par = par
 ```
