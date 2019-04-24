@@ -2,6 +2,18 @@
 
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
 
+## Conditions
+The if is implemented as follows
+```Python
+if condition:
+    pass
+elif condition:
+    pass
+[...]
+else:
+    pass
+```
+
 ## Functions
 The basic syntax is given by
 ```Python
