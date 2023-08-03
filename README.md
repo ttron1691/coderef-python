@@ -2,6 +2,11 @@
 
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
 
+## Data Types
+### 
+### Numeric Types
+### Sequences Types
+
 ## Conditions
 The if is implemented as follows
 ```Python
@@ -45,14 +50,19 @@ def func(par):
 ```
 
 ## Classes
-
 The basic syntax is given by
 
 ```Python
-class ClassName(object):
+class ClassName:
     """
     Documentation of the class
     """
     def __init__(self, par, *args, **kwargs):
-        self.par = par
+        self._par = par
+
+    def update_par(self, par):
+        self._par = par
+
+    def read_par(self):
+        return self._par
 ```
