@@ -14,6 +14,26 @@ else:
     pass
 ```
 
+## Loops
+For-loop in Python
+```Python
+for i in range(10):
+    print(i)
+```
+For-each loop in Python
+```Python
+my_list = [1, 2, 5]
+for x in my_list:
+    print(x)
+```
+While loop in Python
+```Python
+n = 10
+while n > 0:
+    print(n)
+    n -= 1
+```
+
 ## Functions
 The basic syntax is given by
 ```Python
