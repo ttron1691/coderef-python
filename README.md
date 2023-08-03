@@ -4,11 +4,26 @@ This code reference is supposed to give an overview about the syntax and the ele
 
 ## Data Types
 ### 
+### Boolean Type
 ### Numeric Types
-### Sequences Types
+### String Types
+### Binary Types
+### Sequence Types
+#### List
+We define a list as follows
+```Python
+a_list = [1, "b", 6.5, None]
+```
+#### Tuple
+#### Range
+### Mapping Types
+#### Dictionary
+### Set Types
+#### Set
+#### Frozenset
 
 ## Conditions
-The if is implemented as follows
+In Python the conditional expressions are used as follows
 ```Python
 if condition:
     pass
