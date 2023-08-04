@@ -66,7 +66,27 @@ n = 10
 while n > 0:
     n -= 1
 ```
+## Input and Output
+```Python
+# Console input
+inp = input('This is your input: ')
+print('Your input: ' + inp)
 
+# File object read methods, n: byte number
+read(size=-1)      # read complete content
+readline(size=-1)  # read a single line
+readlines()        # read complete content and return list
+
+# Read content of a given file [file_name='my_file.txt']
+with open(file_name, 'r') as file_stream:
+    file_content = file_stream.read()
+
+# File object write methods [file_name='output.txt']
+write(string)      # writes string to a file
+writelines(seq)    # writes sequence to a file
+with open(file_name, 'w') as file_stream:
+    file_stream.write(my_data)
+```
 ## Functions
 The basic syntax is given by
 ```Python
@@ -76,7 +96,6 @@ def func(par):
     """
     return 0
 ```
-
 ## Classes
 The basic syntax is given by
 
