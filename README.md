@@ -142,7 +142,7 @@ python -m venv myvenv         # Create
 .\myvenv\Scripts\activate     # Activate
 deactivate                    # Deactivate
 ```
-### JSON Package
+## JSON Package
 ```Python
 # json.load()
 # json.dump(obj, fp, *, …, indent=None, …, **kw)
@@ -155,4 +155,29 @@ with open(file_name, 'r') as file_reader:
 # Write JSON file [e.g. file_name = 'my_output.json']
 with open(file_name, 'w') as file_writer:
     json.dump(output_data, file_writer, indent=4)
+```
+## Requests Package
+```Python
+# Install
+python -m pip install requests
+# Import
+import requests
+
+# Response object
+response.status_code 		# Attribute: response status code
+response.headers['Content-Type']	# Attribute: response headers
+response.json()			# Method: receive json-object
+
+api_url = 'https://apiurl.com/post'	# URL for the API
+
+# GET request
+response = requests.get(api_url) 
+response_json = response.json() 	# Example: {'userID': 1, 'text': 'text_example'}
+
+# POST request
+response = requests.post(api_url, json={'id': 2, 'title': 'text'})
+response = requests.post(api_url, json={'id': 2, 'title': 'text'}, headers={'Content-Type': 'application/json'})
+
+# PUT request 
+response = requests.post('https://apiurl.com/put', )
 ```
