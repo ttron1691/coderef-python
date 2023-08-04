@@ -142,3 +142,17 @@ python -m venv myvenv         # Create
 .\myvenv\Scripts\activate     # Activate
 deactivate                    # Deactivate
 ```
+### JSON Package
+```Python
+# json.load()
+# json.dump(obj, fp, *, …, indent=None, …, **kw)
+# json.dumps(obj, *, …, **kw)
+
+# Read JSON file [e.g. file_name = 'file.json']
+with open(file_name, 'r') as file_reader:
+    data = json.load(file_reader)
+
+# Write JSON file [e.g. file_name = 'my_output.json']
+with open(file_name, 'w') as file_writer:
+    json.dump(output_data, file_writer, indent=4)
+```
