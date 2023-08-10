@@ -73,6 +73,16 @@ elif condition:
 else:
     pass
 ```
+Example
+```Python
+n = 10
+if n < 10:
+    print("n is smaller than 10")
+elif n == 10:
+    print("n is equal to 10")
+else:
+    print("n is larger than 10)"
+```
 
 ## Loops
 For-loop in Python
@@ -139,6 +149,9 @@ class ClassName:
     def read_par(self):
         return self._par
 ```
+### Abstract (Base) Classes
+### Inheritance
+## Decoratos
 ## Virtual Environments
 There exist "venv" or "virtualenv" as virtual environment packages. The installation of "virtualenv" can be done via pip
 ```shell
@@ -207,3 +220,5 @@ response = requests.post(api_url, json={'id': 2, 'title': 'text'}, headers={'Con
 # PUT request 
 response = requests.post('https://apiurl.com/put', )
 ```
+## Logging
+## Command Line Arguments
