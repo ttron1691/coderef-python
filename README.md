@@ -15,6 +15,32 @@ var_int = 1
 var_floag = 2.3
 ```
 ### String Types
+In Python strings are represented via quoted expressions
+```Python
+s_var1 = "This is a string"
+s_var2 = "a, b, c"
+```
+Futhermore, there exist various methods to manipulate strings
+```Python
+len(s)		         # String length
+list(s)		         # Create list of separate strings ['t', 'e', 'x', 't']
+
+s1 + s2		         # Concatenate strings
+(s + ' ') * 3	     # Repeat string with separator
+s.upper()		     # Upper case
+s.lower()		     # Lower case
+s.capitalize()	     # Capitalize
+s.title()		     # Capitalize each new word
+s.split(sep = 'e')	 # Split string, Example: ['t', 'xt']
+s.split(sep = ' ')	 # Split text into single words
+s[::-1]		         # Reverse a string
+s.strip('te')	     # Remove parts of a string, Example: 'xt'
+s.replace('e', 'E')  # Replace parts of a string, Example: 'tExt'
+s.replace('.', '')   # Remove punctuation in a string
+''.join(['a', 'b'])  # Join list of characters into a string, Example: 'ab'
+s.count('e')	     # Count characters in string, Example: 1
+s.find('e')	         # Find sub string in given string, Example: 1
+```
 ### Binary Types
 ### Sequence Types
 #### List
