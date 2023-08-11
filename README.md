@@ -1,7 +1,8 @@
 # Python Reference for programming
-
-This code reference is supposed to give an overview about the syntax and the elements of the Python programming language.  
-
+This code reference is supposed to give an overview about the syntax and the elements of the Python programming language. 
+## Math
+We display math equatios $E=mc^2$ and also
+$$F(b)-F(a)=\int_a^bf(x)dx$$
 ## Data Types
 ### 
 ### Boolean Type
