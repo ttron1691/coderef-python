@@ -4,8 +4,8 @@ This code reference is supposed to give an overview about the syntax and the ele
 ### 
 ### Boolean Type
 ```Python
-bt = True
-bf = False
+bool_true = True
+bool_false = False
 ```
 ### Numeric Types
 ```Python
