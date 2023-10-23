@@ -51,6 +51,22 @@ my_list = [1, "b", 6.5, None]
 my_tuple = (1, 5, -9)
 ```
 #### Range
+The range type represents an immutable sequence of numbers with syntax
+```
+class range(start, stop[, step])
+```
+It is commonly used for looping a specific number of times in for loops such as
+We can define range iterators as follows
+```Python
+sum_iter = 0
+for i in range(10):
+    sum_iter += 1
+```
+We can also define lists by using range types
+```Python
+list(range(10))
+# [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
 ### Mapping Types
 #### Dictionary
 ```Python
@@ -150,6 +166,7 @@ class ClassName:
 ### Abstract (Base) Classes
 ### Inheritance
 ## Decoratos
+## Generators
 ## Virtual Environments
 There exist "venv" or "virtualenv" as virtual environment packages. The installation of "virtualenv" can be done via pip
 ```shell
