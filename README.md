@@ -196,7 +196,9 @@ python -m venv myvenv         # Create
 .\myvenv\Scripts\activate     # Activate
 deactivate                    # Deactivate
 ```
-## JSON Package
+## Standard Library
+### Web protocol and data handling
+### JSON Package
 ```Python
 # json.load()
 # json.dump(obj, fp, *, …, indent=None, …, **kw)
@@ -210,7 +212,7 @@ with open(file_name, 'r') as file_reader:
 with open(file_name, 'w') as file_writer:
     json.dump(output_data, file_writer, indent=4)
 ```
-## Requests Package
+### Requests Package
 ```Python
 # Install
 python -m pip install requests
@@ -235,5 +237,10 @@ response = requests.post(api_url, json={'id': 2, 'title': 'text'}, headers={'Con
 # PUT request 
 response = requests.post('https://apiurl.com/put', )
 ```
-## Logging
-## Command Line Arguments
+### Operating System Services
+#### Logging
+#### Command Line Arguments
+### Database Connection
+#### SQLite
+### Graphical User Interfaces
+#### Tkinter
