@@ -167,6 +167,15 @@ class ClassName:
 ### Inheritance
 ## Decoratos
 ## Generators
+## Exceptions
+The typical structure for catching or throwing exceptions is given by
+```Python
+try:
+    # Some code
+except SomeException:
+    tb = sys.exception().__traceback__
+    raise OtherException(...).with_traceback(tb)
+```
 ## Virtual Environments
 There exist "venv" or "virtualenv" as virtual environment packages. The installation of "virtualenv" can be done via pip
 ```shell
