@@ -1,7 +1,29 @@
 # Python Reference for programming
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language. 
 ## Data Types
-### 
+### Check for Data Type
+We can check for the data type of a variable as follows
+```Python
+isinstance(var_name, var_type)
+```
+Example
+```Python
+a = 2
+if isinstance(a, int):
+   print("Integer type")
+else:
+   print("No Integer type")
+```
+### None Type
+The type None is used to represent a variable which is empty. In other words, the None type can be associated with a pointer which does not point to a specific address in memory.
+```Python
+var_none = None
+```
+Example
+```Python
+if isinstance(var_none, None):
+   print("None type")
+```
 ### Boolean Type
 ```Python
 bool_true = True
@@ -10,7 +32,7 @@ bool_false = False
 ### Numeric Types
 ```Python
 var_int = 1
-var_floag = 2.3
+var_float = 3.14159265359
 ```
 ### String Types
 In Python strings are represented via quoted expressions
@@ -42,9 +64,31 @@ s.find('e')	         # Find sub string in given string, Example: 1
 ### Binary Types
 ### Sequence Types
 #### List
-We define a list as follows
+A list in Python is defined as a build-in mutable dynamic collection module container of objects. We characterize a list with square brackets
 ```Python
-my_list = [1, "b", 6.5, None]
+var_list = [1, 2, 3]
+```
+There are several methods defined for list creation and manipulation
+```Python
+append(x)        	    		# Add element x to end
+extend(iterable) 	    		# Extend list 
+insert(i, x)     	    		# Insert x at position i
+remove(x)        	    		# Remove first element x
+pop([i])         	    		# Remove and return item at i (last)
+clear()                  		# Remove all items from list
+index(x[, start[, end]]) 		# Return index in list of first item x
+count(x) 		    		# Return number of times x appears
+sort(*, key=None, reverse=False) 	# Sort (numerical) items in place
+reverse()				# Reverse elements of list
+copy()				# Return copy of the list
+```
+We give a few examples in the following
+```Python 
+my_list = [1, 2, 3]
+sq_list = [x**2 for x in range(10)]
+sq_list = list(map(lambda x: x**2, range(10)))
+com_list = [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
+fil_list = [x for x in vec if x >= 0]
 ```
 #### Tuple
 ```Python
