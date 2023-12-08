@@ -113,8 +113,41 @@ list(range(10))
 ```
 ### Mapping Types
 #### Dictionary
+In Python a dictionary represents a build-in mutable dynamic collection module container of objects (associative arrays). Dictionaries are collections of key-value pairs, with unique key-list. We can declare a dictionary via curly brackets
 ```Python
-my_dict = {"name": "A", "value": 5.53}
+my_dict = {
+    <key_1>: <value_1>,
+    <key_2>: <value_2>,
+    …
+    <key_n>: <value_n>
+}
+```
+The following methods are used to create or manipulate the data of a dictionary
+```Python
+clear()			# Remove all elements
+copy()			# Return copy of given dictionary
+fromkeys(keys[,value])	# Create empty dictionary from keys iterable
+get(keyname [,value])	# Return dictionary value for given key
+items()			# Return view object to dictionary items
+keys()			# Return view object to dictionary keys [list(my_dict.keys())]
+pop(keyname)		# Remove key-value pair from dictionary and returns it
+popitem()			# Remove object that was last inserted (old: remove random object)
+setdefault(keyname [,value])	# Return value of item with specific key (set if not exists) 
+update(iterable)		# Insert specified items to the dictionary
+values()			# Return view object to dictionary values [list(my_dict.values())]
+```
+We can iterate over the key value pairs of a dictionary in the following way
+```Python
+for key, value in my_dict.items():
+    print(key, value)
+```
+Examples
+```Python
+var_dict = {"key_1": 1,
+            "key_2": 2.53,
+            "key_3": "text"}
+my_dict = {'a': 1, 'b': 'text', 'c': 12.284}
+my_dict_num = {x: x**2 for x in (2, 4, 6)} # Result: {2: 4, 4: 16, 6: 36}
 ```
 ### Set Types
 #### Set
