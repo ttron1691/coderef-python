@@ -124,17 +124,17 @@ my_dict = {
 ```
 The following methods are used to create or manipulate the data of a dictionary
 ```Python
-clear()			# Remove all elements
-copy()			# Return copy of given dictionary
-fromkeys(keys[,value])	# Create empty dictionary from keys iterable
-get(keyname [,value])	# Return dictionary value for given key
-items()			# Return view object to dictionary items
-keys()			# Return view object to dictionary keys [list(my_dict.keys())]
-pop(keyname)		# Remove key-value pair from dictionary and returns it
-popitem()			# Remove object that was last inserted (old: remove random object)
+clear()			                # Remove all elements
+copy()			                # Return copy of given dictionary
+fromkeys(keys[,value])	        # Create empty dictionary from keys iterable
+get(keyname [,value])	        # Return dictionary value for given key
+items()			                # Return view object to dictionary items
+keys()			                # Return view object to dictionary keys [list(my_dict.keys())]
+pop(keyname)		            # Remove key-value pair from dictionary and returns it
+popitem()			            # Remove object that was last inserted (old: remove random object)
 setdefault(keyname [,value])	# Return value of item with specific key (set if not exists) 
-update(iterable)		# Insert specified items to the dictionary
-values()			# Return view object to dictionary values [list(my_dict.values())]
+update(iterable)		        # Insert specified items to the dictionary
+values()			            # Return view object to dictionary values [list(my_dict.values())]
 ```
 We can iterate over the key value pairs of a dictionary in the following way
 ```Python
@@ -152,7 +152,91 @@ my_dict_num = {x: x**2 for x in (2, 4, 6)} # Result: {2: 4, 4: 16, 6: 36}
 ### Set Types
 #### Set
 #### Frozenset
+## Documentation
+We focus on the Google style format for Python in the following. The basic structure of the documentation docstring looks as follows
+```Python
+"""Fetches rows from a Smalltable.
+    Args:
+        parameter_one: The first parameter.
+        parameter_two: The second parameter
+          with a second line.
 
+    Returns:
+        A pandas DataFrame including the cleaned data
+
+        {'data': ["a", "b", "c"],
+         'value': [1, 2, 3]}
+
+        If a key from the keys argument is missing from the dictionary, 
+        then that row was not found in the DataFrame.
+
+    Raises:
+        IOError: An error occurred accessing the smalltable.
+    """
+```
+A function is documented in the following way
+```Python
+# Example method
+def fetch_smalltable_rows(
+    table_handle: smalltable.Table,
+    keys: Sequence[bytes | str],
+    require_all_keys: bool = False,
+) -> Mapping[bytes, tuple[str, ...]]:
+    """Fetches rows from a Smalltable.
+
+    Retrieves rows pertaining to the given keys from the Table instance
+    represented by table_handle.  String keys will be UTF-8 encoded.
+
+    Args:
+        table_handle: An open smalltable.Table instance.
+        keys: A sequence of strings representing the key of each table
+          row to fetch.  String keys will be UTF-8 encoded.
+        require_all_keys: If True only rows with values set for all keys will be
+          returned.
+
+    Returns:
+        A dict mapping keys to the corresponding table row data
+        fetched. Each row is represented as a tuple of strings. For
+        example:
+
+        {b'Serak': ('Rigel VII', 'Preparer'),
+         b'Zim': ('Irk', 'Invader'),
+         b'Lrrr': ('Omicron Persei 8', 'Emperor')}
+
+        Returned keys are always bytes.  If a key from the keys argument is
+        missing from the dictionary, then that row was not found in the
+        table (and require_all_keys must have been False).
+
+    Raises:
+        IOError: An error occurred accessing the smalltable.
+    """
+```
+A class is documented in the following way
+```Python
+class SampleClass:
+    """Summary of class here.
+
+    Longer class information...
+    Longer class information...
+
+    Attributes:
+        likes_spam: A boolean indicating if we like SPAM or not.
+        eggs: An integer count of the eggs we have laid.
+    """
+
+    def __init__(self, likes_spam: bool = False):
+        """Initializes the instance based on spam preference.
+
+        Args:
+          likes_spam: Defines if instance exhibits this preference.
+        """
+        self.likes_spam = likes_spam
+        self.eggs = 0
+
+    def public_method(self):
+        """Performs operation."""
+
+```
 ## Conditions
 In Python the conditional expressions are used as follows
 ```Python
@@ -250,8 +334,57 @@ The typical structure for catching or throwing exceptions is given by
 try:
     # Some code
 except SomeException:
-    tb = sys.exception().__traceback__
-    raise OtherException(...).with_traceback(tb)
+    # Some code
+```
+A typical workflow for exception handling looks as follows
+```Python
+try:
+    # Some code which may result in an exception case
+except SomeException1 as e:
+    # Consider check for exception one
+except SomeException1 as e:
+    # Consider check for exception two
+except Exception as e:
+    # Handle other exceptions at this point
+```
+We can also define a custom exception in Python
+```Python
+class CustomException(Exception):
+    pass
+```
+This can be used as follows
+```Python
+try:
+    if condition:
+        raise CustomException("An error occured during the condition check.")
+except CustomException as e:
+    # Handle the custom exception
+except Exception as e:
+    # Handle other exceptions at this point
+```
+We can also define either an else or a finally section after the try/except blocks
+```Python
+try:
+    # Some code which may result in an exception case
+except SomeException1 as e:
+    # Consider check for exception one
+except SomeException1 as e:
+    # Consider check for exception two
+except Exception as e:
+    # Handle other exceptions at this point
+else:
+    # Code which will be executed if there are no exceptions
+```
+Additionally, we give the finally section here
+```Python
+try:
+    # Some code which may result in an exception case
+except Exception as e:
+    # Handle other exceptions at this point
+else:
+    # Code which will be executed if there are no exceptions
+finally:
+    # Code which will be always executed 
 ```
 ## Virtual Environments
 There exist "venv" or "virtualenv" as virtual environment packages. The installation of "virtualenv" can be done via pip
@@ -302,6 +435,7 @@ with open(file_name, 'w') as file_writer:
 ```Python
 # Install
 python -m pip install requests
+
 # Import
 import requests
 
@@ -323,9 +457,64 @@ response = requests.post(api_url, json={'id': 2, 'title': 'text'}, headers={'Con
 # PUT request 
 response = requests.post('https://apiurl.com/put', )
 ```
-### Operating System Services
-#### Logging
-#### Command Line Arguments
+### Logging
+The basic usage for logging message by using the default logging instance is given as follows
+```Python
+import logging
+
+logging.info("This is an info message")
+logging.debug('This message is for debugging purposes')
+logging.warning("This is a warning message")
+logging.error('This is an error message')
+```
+We list the different logging levels in the following
+```Python
+logging.DEBUG           # Detailed information, typically of interest only when diagnosing problems
+logging.INFO            # Confirmation that things are working as expected
+logging.WARNING         # An indication that something unexpected happened, or indicative of some problem in the near future
+logging.ERROR           # Due to a more serious problem, the software has not been able to perform some function
+logging.CRITICAL        # A serious error, indicating that the program itself may be unable to continue running
+``` 
+For logging to a specified logfile we can use
+```Python
+import logging
+
+logging.basicConfig(filename='logfile-example.log', encoding='utf-8', level=logging.DEBUG)
+```
+By default all messages are appended to the specified logfile. In order to create a new logfile for each run we can use
+```Python
+logging.basicConfig(filename='logfile-example.log', filemode='w', level=logging.DEBUG)
+```
+For extended logging messages we can include a timestamp as follows
+```Python
+import logging
+
+logging.basicConfig(filename="example2.log", 
+                    format='%(asctime)s, %(levelname)s, %(message)s', 
+                    datefmt='%m-%d-%Y-%H-%M-%S', 
+                    level=logging.DEBUG, 
+                    filemode="w")
+```
+### Command Line Arguments
+We start with the basic setup of the argparse package
+```Python
+import argparse
+# Create argparse object
+parser = argparse.ArgumentParser()                  # Create argparse object
+# Add arguments
+parser.add_argument("path")                         # Add argument for parsing input parameters
+parser.add_argument("file", help="file to read")    # Add help message for the given parameter
+parser.add_argument("num", help"Number", type=int)  # Add argument with specified type (default: str)  
+# Receive parameters      
+args = parser.parse_args()                          # Parse arguments
+# Evaluate parameters
+print(args.path)
+print(args.file)
+```
+This can be executed by using the command line (e.g. Bash)
+```Shell
+$ python main.py --help                 # Print information and usage message
+```
 ### Database Connection
 #### SQLite
 ### Graphical User Interfaces
