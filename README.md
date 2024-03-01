@@ -1,5 +1,7 @@
 # Python Reference for programming
 This code reference is supposed to give an overview about the syntax and the elements of the Python programming language. 
+## Download and installation
+We can download the build files for various operating systems on the official Python website [https://www.python.org/](https://www.python.org/).
 ## Data Types
 ### Check for Data Type
 We can check for the data type of a variable as follows
