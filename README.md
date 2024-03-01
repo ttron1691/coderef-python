@@ -521,3 +521,8 @@ $ python main.py --help                 # Print information and usage message
 #### SQLite
 ### Graphical User Interfaces
 #### Tkinter
+
+## References
+- Python Software Foundation: [https://www.python.org/](https://www.python.org/)
+- Python Tutorial: [https://docs.python.org/3/tutorial/index.html](https://docs.python.org/3/tutorial/index.html)
+- Python Standard Library: [https://docs.python.org/3/library/index.html](https://docs.python.org/3/library/index.html)
