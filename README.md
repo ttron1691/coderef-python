@@ -154,6 +154,26 @@ my_dict_num = {x: x**2 for x in (2, 4, 6)} # Result: {2: 4, 4: 16, 6: 36}
 ### Set Types
 #### Set
 #### Frozenset
+## Style
+### Line breaks
+Considering styling and readability of code we follog the PEP 8 style guide recommendations. The correct way to handle line breaks for different situations is given as follows
+```Python
+# Aligned with opening delimiter
+foo = long_function_name(var_one, var_two,
+                         var_three, var_four)
+
+# Add 4 spaces (an extra level of indentation) to distinguish arguments from the rest.
+def long_function_name(
+      var_one, var_two, var_three,
+      var_four):
+   print(var_one)
+
+# Hanging indents should add a level.
+foo = long_function_name(
+   var_one, var_two,
+   var_three, var_four)
+```
+### Method chaining
 ## Documentation
 We focus on the Google style format for Python in the following. The basic structure of the documentation docstring looks as follows
 ```Python
