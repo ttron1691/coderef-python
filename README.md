@@ -173,7 +173,53 @@ foo = long_function_name(
    var_one, var_two,
    var_three, var_four)
 ```
+Considering line breaks for if statements we proceed as follows
+```Python
+# No extra indentation.
+if (this_is_one_thing and
+    that_is_another_thing):
+    do_something()
+
+# Add a comment, which will provide some distinction in editors
+# supporting syntax highlighting.
+if (this_is_one_thing and
+    that_is_another_thing):
+    # Since both conditions are true, we can frobnicate.
+    do_something()
+
+# Add some extra indentation on the conditional continuation line.
+if (this_is_one_thing
+      and that_is_another_thing):
+   do_something()
+```
 ### Method chaining
+Concerning method chaining a single line with multiple chained method calls may suffer from good readability.
+
+We can use backslashes allowing a line to continue beyond a line break
+```Python
+df_input = pd.read_csv("data/input/extract_test.csv", index_col=0) \
+             .drop(columns="my_col") \
+             .sort_values("index") \
+             .head(1)
+```
+Furthermore, we may use parentheses () for which free line breaks are allowed
+```Python
+df_input = (
+   pd.read_csv("data/input/extract_test.csv", index_col=0)
+   .drop(columns="my_col")
+   .sort_values("index")
+   .head(1)
+)
+```
+We can also use parentheses () for a standalone statement instead of assigning a value to a variable
+```Python
+(
+   spark.createDataFrame(df).write
+   .format("csv")
+   .mode("overwrite")
+   .save("/tmp/output/test_data")
+)
+```
 ## Documentation
 We focus on the Google style format for Python in the following. The basic structure of the documentation docstring looks as follows
 ```Python
