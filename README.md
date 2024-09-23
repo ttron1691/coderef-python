@@ -454,6 +454,15 @@ else:
 finally:
     # Code which will be always executed 
 ```
+## Python Packages
+We can import python files as modules which is beneficial in terms of software development efforts including multiple source files structured within directories. We start with the following structure of code
+```shell
+packaging_tutorial/
+└── src/
+    └── utils
+        ├── __init__.py
+        └── readwrite.py
+```
 ## Virtual Environments
 There exist "venv" or "virtualenv" as virtual environment packages. The installation of "virtualenv" can be done via pip
 ```shell
