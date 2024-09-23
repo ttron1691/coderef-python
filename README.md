@@ -457,11 +457,33 @@ finally:
 ## Python Packages
 We can import python files as modules which is beneficial in terms of software development efforts including multiple source files structured within directories. We start with the following structure of code
 ```shell
-packaging_tutorial/
+package/
 └── src/
     └── utils
         ├── __init__.py
         └── readwrite.py
+    main.py
+```
+The readwrite module looks as follows
+```Python
+# src/utils/readwrite.py
+def rw_function():
+   pass
+```
+Within the main file, the readwrite module can be import as follows
+```Python
+# src/main.py
+from utils.readwrite import rw_function
+```
+The __init__.py file indicates that the directory is considered as a Python package. The __init__.py file can contain the imports of modules, for instance
+```Python
+# src/utils/__init__.py
+from .readwrite import rw_function
+```
+Then, within the main.py file we can simply import the module as follows
+```Python
+# src/main.py
+from utils import readwrite
 ```
 ## Virtual Environments
 There exist "venv" or "virtualenv" as virtual environment packages. The installation of "virtualenv" can be done via pip
