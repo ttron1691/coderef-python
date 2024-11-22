@@ -454,6 +454,8 @@ else:
 finally:
     # Code which will be always executed 
 ```
+## Python Typing
+
 ## Python Packages
 We can import python files as modules which is beneficial in terms of software development efforts including multiple source files structured within directories. We start with the following structure of code
 ```shell
