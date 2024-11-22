@@ -455,6 +455,111 @@ finally:
     # Code which will be always executed 
 ```
 ## Python Typing
+The typing library is used as a tool to provide the developer hints and details about the data types of variables, primarily used in function or method definitions. Basically, the parameters and the return type of a method can receive a type hint as well as all variables which are initialized in the code. 
+### Build-in types
+The basic notation for internal build-in data types like int, str, float, bool, None works as follows
+```Python
+def add(x: int, y: int) -> int:
+    return x + y
+```
+### Collections
+In terms of collections we can use the following
+```Python
+from typing import List, Dict, Tuple
+
+def get_names(ages: Dict[str, int]) -> List[str]:
+    return list(ages.keys())
+
+def process_coordinates(coords: Tuple[int, int, int]) -> str:
+    return f"Coordinates: {coords}"
+```
+We may think of the generic types
+* List[T]: A list containing elements of type T
+* Dict[K, V]: A dictionary with keys of type K and values of type V
+* Tuple[T1, T2, ...]: A tuple with specified types for each element
+
+### Optional values
+The optional type hint is used for variables or arguments that my be of type None
+```Python
+from typing import Optional
+
+def greet(name: Optional[str] = None) -> str:
+    return f"Hello, {name}" if name else "Hello, Stranger"
+
+```
+
+### Union
+The Union type hint is used for variables that can have multiple types
+```Python
+from typing import Union
+
+def parse_input(value: Union[int, str]) -> int:
+    return int(value)
+```
+
+### Callable
+
+The callable type hint is used to specify functions or callbacks within a specific signature
+```Python
+from typing import Callable
+
+def operate(a: int, b: int, func: Callable[[int, int], int]) -> int:
+    return func(a, b)
+```
+
+### Type aliases
+
+We can also define custom aliases for more complex data types in the following way
+```Python
+from typing import List
+
+Vector = List[float]
+
+def scale(vector: Vector, factor: float) -> Vector:
+    return [x * factor for x in vector]
+```
+
+### Generics
+The TypeVar is used to create generic functions or classes
+```Python
+from typing import TypeVar, List
+
+T = TypeVar('T')  # Can be any type
+
+def get_first_element(items: List[T]) -> T:
+    return items[0]
+```
+
+### Any type
+The Any type hint allows any type and is used in the following way
+```Python
+from typing import Any
+
+def handle_dynamic_input(data: Any) -> None:
+    print(data)  # Accepts any type
+
+```
+
+### Final
+The Final type hint is used for immutable variables in the following way
+```Python
+from typing import Final
+
+PI: Final = 3.14159
+```
+
+### Literal
+Using literal we can restrict variables to specific values 
+```Python
+from typing import Literal
+
+def set_mode(mode: Literal['read', 'write']) -> None:
+    pass
+
+set_mode('read')  # Valid
+set_mode('execute')  # Type error
+```
+
 
 ## Python Packages
 We can import python files as modules which is beneficial in terms of software development efforts including multiple source files structured within directories. We start with the following structure of code
