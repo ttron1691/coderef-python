@@ -622,6 +622,44 @@ python -m venv myvenv         # Create
 deactivate                    # Deactivate
 ```
 ## Standard Library
+### Regular expressions
+The Python ```re``` package is used for working with regular expressions (regex). In particular, this allows to match, search, and manipulate
+strings based on patterns
+
+Overview of most frequently used functions
+```python
+match = re.match(pattern, string, flags=0)                          # re.match(r'hello', "hello world"), use match.group()
+match = re.search(pattern, string, flags=0)                         # re.search(r'world', "hello world"), use match.group()
+matches = re.findall(pattern, string, flags=0)                      # re.findall(r'\d+', "123 apples and 456 oranges"), gives ['123', '456']
+matches = re.finditer(pattern, string, flags=0)                     # re.finditer(r'\d+', "123 apples and 456 oranges")
+result = re.split(pattern, string, maxsplit=0, flags=0)             # re.split(r'[,\s]+', "apple, orange  banana")
+result = re.sub(pattern, repl, string, count=0, flags=0)            # 
+result, num_subs = re.subn(pattern, repl, string, count=0, flags=0) # re.subn(r'\d+', '###', "123 apples and 456 oranges")
+match = re.fullmatch(pattern, string, flags=0)                      # re.fullmatch(r'\d+', "12345")
+pattern = re.compile(pattern, flags=0)                              # re.compile(r'\d+'), use pattern.findall("my text")
+```
+
+#### Match 
+The match function can be used as follows
+```python
+re.match(pattern, string, flags=0)
+```
+
+Example code
+```python
+import re
+
+pattern = r'hello'
+string = "hello World"
+
+match = re.match(pattern, string)
+if match:
+    print("Match found: ", match.group())
+else:
+    print("No match found")
+```
+
+
 ### Web protocol and data handling
 ### JSON Package
 ```Python
