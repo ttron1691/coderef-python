@@ -701,6 +701,29 @@ response = requests.post(api_url, json={'id': 2, 'title': 'text'}, headers={'Con
 # PUT request 
 response = requests.post('https://apiurl.com/put', )
 ```
+
+### Pydantic
+The basic element of Pydantic is the model creation and validation
+```Python
+from pydantic import BaseModel
+from typing import Optional, Literal
+
+class User(BaseModel):
+    id: int
+    name: str
+    age: int
+    email: str
+    employment_status: Literal['working', 'retired']
+    is_active: bool = True
+    information: Optional[str] = None
+
+# Example Usage
+user = User(id=1, name="Alice", age=25, email="alice@example.com", employment_status="working")
+
+# Conversion to Python dictionary
+user.dict()
+```
+
 ### Logging
 The basic usage for logging message by using the default logging instance is given as follows
 ```Python
