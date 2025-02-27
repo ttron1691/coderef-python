@@ -6,6 +6,7 @@ This code reference is supposed to give an overview about the syntax and the ele
 - [Data Types](#data-types)
 - [Documentation](#documentation)
 - [Standard Library](#standard-library)
+- [Pytest](#pytest)
 
 ## Download and installation
 We can download the build files for various operating systems on the official Python website [https://www.python.org/](https://www.python.org/).
@@ -652,6 +653,57 @@ user.dict()
 ```
 
 ### Pytest
+Pytest is a robust testing framework for Python known for its  simple syntax, scalability, and powerful features like fixtures, parameterization, and plugins.
+
+In order to install pytest we can just use the pip package manager and run the following command
+```shell
+pip install pytest
+```
+
+The execution of all pytest components can be done by running the following command
+```shell
+pytest
+```
+Alternatively, one specifiy test modules can be run
+```shell
+pytest test_file.py
+```
+Using the verbose flag we can give more output information
+```shell
+pytest -v
+```
+
+The basic concept for discovering the relevant test components is to identify the filenames that start with ```test_``` or end with ```_test.py```. 
+The assert statement can be used to verify expressions in the pytest components.
+
+A simple pytest defined in a test module with name ```test_component.py``` is given below
+```python
+import pytest
+
+def test_component():
+    assert 1 + 1 == 2
+```
+
+Tests can also be grouped within classes
+```python
+import pytest
+
+class TestMathOperations:
+    def test_addition(self):
+        assert 1 + 2 == 2
+    def test_subtraction(self):
+        assert 2 - 1 == 1
+```
+
+Fixtures provide setup and teardown code for tests. They enhance test modularity and reusability.
+
+```python
+import pytest
+
+@pytest.fixture
+def sample_data():
+    return {"key": "value"}
+```
 
 ## Standard Library
 
