@@ -652,16 +652,12 @@ user = User(id=1, name="Alice", age=25, email="alice@example.com", employment_st
 user.dict()
 ```
 
-# Python Pydantic Reference Card
-
-## Basic Usage
-
-### Installation
+#### Installation
 ```python
 pip install pydantic
 ```
 
-### Simple Model
+#### Simple Model
 ```python
 from pydantic import BaseModel
 
@@ -672,7 +668,7 @@ class User(BaseModel):
     active: bool = True  # Default value
 ```
 
-### Type Validation
+#### Type Validation
 ```python
 user = User(id=1, name="John Doe", email="john@example.com")  # Valid
 user = User(id="1", name="John Doe", email="john@example.com")  # Coerces "1" to int(1)
@@ -683,7 +679,7 @@ except:
     print("Validation error: id must be an integer")
 ```
 
-### Model Methods
+#### Model Methods
 ```python
 # Dictionary conversion
 user_dict = user.model_dump()  # In v2+, was .dict() in v1
@@ -693,9 +689,9 @@ user_json = user.model_dump_json()  # In v2+, was .json() in v1
 user2 = user.model_copy(update={"name": "Jane Doe"})  # In v2+, was .copy() in v1
 ```
 
-## Field Types and Validation
+#### Field Types and Validation
 
-### Common Types
+#### Common Types
 ```python
 from datetime import datetime
 from typing import List, Dict, Optional, Union
@@ -716,7 +712,7 @@ class AdvancedUser(BaseModel):
     user_id: UUID  # UUID validation
 ```
 
-### Field Configuration
+#### Field Configuration
 ```python
 from pydantic import BaseModel, Field
 
@@ -733,9 +729,9 @@ class Product(BaseModel):
     sku: str = Field(regex=r"^[A-Z]{3}-\d{4}$")
 ```
 
-## Advanced Validation
+#### Advanced Validation
 
-### Validators
+#### Validators
 ```python
 from pydantic import BaseModel, field_validator, model_validator
 
@@ -759,7 +755,7 @@ class Order(BaseModel):
         return self
 ```
 
-### Custom Types
+#### Custom Types
 ```python
 from pydantic import BaseModel, GetCoreSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
@@ -802,9 +798,9 @@ class Book(BaseModel):
     isbn: ISBN10
 ```
 
-## Nested Models
+#### Nested Models
 
-### Model Composition
+#### Model Composition
 ```python
 from pydantic import BaseModel
 from typing import List
@@ -831,7 +827,7 @@ user = User(
 )
 ```
 
-### Recursive Models
+#### Recursive Models
 ```python
 from pydantic import BaseModel
 from typing import List, Optional
@@ -844,9 +840,9 @@ class Comment(BaseModel):
 Comment.model_rebuild()  # Required for recursive models in v2
 ```
 
-## Config and Settings
+#### Config and Settings
 
-### Model Config
+#### Model Config
 ```python
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
@@ -874,7 +870,7 @@ class User(BaseModel):
     signup_ts: datetime
 ```
 
-### Settings Management
+#### Settings Management
 ```python
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
@@ -906,9 +902,9 @@ class AppSettings(BaseSettings):
 settings = AppSettings()
 ```
 
-## Serialization & Deserialization
+#### Serialization & Deserialization
 
-### JSON Schema Generation
+#### JSON Schema Generation
 ```python
 from pydantic import BaseModel
 from typing import List
@@ -926,7 +922,7 @@ schema = Order.model_json_schema()
 print(schema)
 ```
 
-### Custom Serialization
+#### Custom Serialization
 ```python
 from pydantic import BaseModel, field_serializer, field_validator
 from datetime import datetime
@@ -946,7 +942,7 @@ class LogEntry(BaseModel):
         return value.upper()
 ```
 
-### Computed Fields
+#### Computed Fields
 ```python
 from pydantic import BaseModel, computed_field
 from typing import List
@@ -968,9 +964,9 @@ class Order(BaseModel):
         return self.subtotal + self.tax
 ```
 
-## Best Practices
+#### Best Practices
 
-### Error Handling
+#### Error Handling
 ```python
 from pydantic import BaseModel, ValidationError
 
@@ -987,7 +983,7 @@ except ValidationError as e:
         print(f"Field: {error['loc'][0]}, Error: {error['msg']}")
 ```
 
-### Type Annotations
+#### Type Annotations
 ```python
 # Prefer these imports for better type checking
 from typing import Dict, List, Optional, Union, Any, Literal
@@ -1003,7 +999,7 @@ class Config(BaseModel):
     metadata: Dict[str, Union[str, int, bool]]  # Better
 ```
 
-### Performance Tips
+#### Performance Tips
 ```python
 from pydantic import BaseModel, Field, model_validator
 
@@ -1022,9 +1018,9 @@ class EfficientModel(BaseModel):
         return self
 ```
 
-## Pydantic v2 Features
+#### Pydantic v2 Features
 
-### Schema Modes
+#### Schema Modes
 ```python
 from pydantic import BaseModel
 
@@ -1038,7 +1034,7 @@ class User(BaseModel):
     name: str
 ```
 
-### RootModel
+#### RootModel
 ```python
 from pydantic import RootModel
 from typing import List, Dict
@@ -1054,7 +1050,7 @@ UserDict = RootModel[Dict[str, str]]
 users = UserDict({"admin": "John", "user1": "Jane"})
 ```
 
-### Type Adapters
+#### Type Adapters
 ```python
 from pydantic import TypeAdapter
 from typing import List
@@ -1068,9 +1064,9 @@ json_data = '[1, 2, "3"]'
 validated_json = IntListValidator.validate_json(json_data)
 ```
 
-## Testing with Pydantic
+#### Testing with Pydantic
 
-### Schema Tests
+#### Schema Tests
 ```python
 from pydantic import BaseModel, Field
 import pytest
