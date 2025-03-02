@@ -1143,6 +1143,336 @@ def sample_data():
     return {"key": "value"}
 ```
 
+#### Installation & Setup
+
+```bash
+pip install pytest
+pip install pytest-cov  # For coverage reports
+```
+
+#### Basic Test Structure
+
+```python
+# test_example.py
+def test_simple_assertion():
+    assert 1 + 1 == 2
+
+def test_with_message():
+    assert 1 == 2, "This will show when the test fails"
+```
+
+#### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run specific file
+pytest test_example.py
+
+# Run specific test
+pytest test_example.py::test_simple_assertion
+
+# Run tests containing specific substring in name
+pytest -k "simple"
+
+# Run tests matching specific markers
+pytest -m "slow"
+
+# Verbose output
+pytest -v
+```
+
+#### Assertions
+
+```python
+# Equality
+assert value == expected
+
+# Greater than/less than
+assert value > expected
+assert value <= expected
+
+# Boolean checks
+assert is_valid
+assert not is_empty
+
+# String contains
+assert "substring" in some_string
+
+# List/dict contains
+assert item in some_list
+assert key in some_dict
+
+# Exception check via context manager
+with pytest.raises(ValueError):
+    function_that_raises()
+
+# Match exception message
+with pytest.raises(ValueError, match="expected error message"):
+    function_that_raises()
+
+# Assert almost equal (for floats)
+assert abs(0.1 + 0.2 - 0.3) < 0.0001
+# Better alternative with pytest.approx
+assert 0.1 + 0.2 == pytest.approx(0.3)
+```
+
+#### Fixtures
+
+```python
+import pytest
+
+# Basic fixture
+@pytest.fixture
+def sample_data():
+    return {"key": "value", "number": 42}
+
+def test_using_fixture(sample_data):
+    assert sample_data["number"] == 42
+
+# Fixture with setup and teardown
+@pytest.fixture
+def db_connection():
+    # Setup
+    connection = create_connection()
+    yield connection
+    # Teardown
+    connection.close()
+
+# Fixture with scope
+@pytest.fixture(scope="module")
+def expensive_operation():
+    # Runs once per module
+    result = perform_expensive_setup()
+    return result
+
+# Parametrized fixture
+@pytest.fixture(params=[1, 2, 3])
+def test_data(request):
+    return request.param
+
+# Using built-in fixtures
+def test_with_tmp_path(tmp_path):
+    file_path = tmp_path / "test.txt"
+    file_path.write_text("content")
+    assert file_path.read_text() == "content"
+```
+
+#### Parameterized Tests
+
+```python
+@pytest.mark.parametrize("input,expected", [
+    (1, 1),
+    (2, 4),
+    (3, 9),
+    (4, 16),
+])
+def test_square(input, expected):
+    assert input * input == expected
+
+# Multiple parameters
+@pytest.mark.parametrize("x", [1, 2])
+@pytest.mark.parametrize("y", [3, 4])
+def test_product(x, y):
+    # Will test all combinations: (1,3), (1,4), (2,3), (2,4)
+    pass
+```
+
+#### Markers
+
+```python
+# Skip test
+@pytest.mark.skip(reason="Not implemented yet")
+def test_future_feature():
+    pass
+
+# Skip based on condition
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python 3.8+")
+def test_new_feature():
+    pass
+
+# Mark test as expected to fail
+@pytest.mark.xfail
+def test_known_bug():
+    assert False
+
+# Custom markers (register in pytest.ini)
+@pytest.mark.slow
+def test_slow_operation():
+    pass
+```
+
+#### Configuration (pytest.ini)
+
+```ini
+[pytest]
+# Default command line options
+addopts = -v --cov=myapp
+
+# Register custom markers
+markers =
+    slow: marks tests as slow
+    integration: marks tests as integration tests
+
+# Directories to search for tests
+testpaths = tests integration_tests
+
+# Pattern for test modules
+python_files = test_*.py *_test.py
+
+# Pattern for test functions
+python_functions = test_*
+
+# Pattern for test classes
+python_classes = Test*
+```
+
+#### Mocking
+
+```python
+# Using pytest-mock fixture
+def test_with_mock(mocker):
+    # Mock a function or method
+    mock_function = mocker.patch('module.function')
+    mock_function.return_value = 'mocked result'
+    
+    # Mock an attribute
+    mocker.patch('module.Class.attribute', 'mocked value')
+    
+    # Mock with side effect (function or exception)
+    mock_func = mocker.patch('module.function')
+    mock_func.side_effect = ValueError("expected error")
+    
+    # Assert mock was called
+    result = function_under_test()
+    mock_function.assert_called_once()
+    mock_function.assert_called_with(expected_arg)
+```
+
+#### Test Classes
+
+```python
+class TestCalculator:
+    # Class-level fixture
+    @pytest.fixture
+    def calculator(self):
+        return Calculator()
+    
+    def test_addition(self, calculator):
+        assert calculator.add(1, 2) == 3
+    
+    def test_subtraction(self, calculator):
+        assert calculator.subtract(5, 3) == 2
+```
+
+#### Pytest Hooks
+
+```python
+# In conftest.py
+def pytest_addoption(parser):
+    parser.addoption("--env", default="dev", help="Environment to run tests against")
+
+def pytest_configure(config):
+    # Add a custom marker
+    config.addinivalue_line("markers", "env(name): mark test to run only on named environment")
+
+def pytest_collection_modifyitems(config, items):
+    # Skip tests based on custom logic
+    env = config.getoption("--env")
+    for item in items:
+        if "prod_only" in item.keywords and env != "prod":
+            item.add_marker(pytest.mark.skip(reason=f"Requires prod environment, current: {env}"))
+```
+
+#### Test Fixtures (conftest.py)
+
+Shared fixtures can be placed in a `conftest.py` file:
+
+```python
+# conftest.py
+import pytest
+
+@pytest.fixture(scope="session")
+def app():
+    return create_app()
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
+```
+
+#### Best Practices
+
+1. **Name tests descriptively**: Use long, descriptive names that explain the purpose and expected outcome
+2. **One assertion per test**: Keep tests focused on a single behavior
+3. **Use pytest.approx()** for floating-point comparisons
+4. **Parametrize repetitive tests**: Use `@pytest.mark.parametrize` for data-driven tests
+5. **Use fixtures for setup/teardown**: Keep tests clean by moving setup code to fixtures
+6. **Keep tests independent**: Tests should not depend on each other
+7. **Avoid mutable fixture state**: Be careful when fixtures have mutable state
+8. **Use markers for categorization**: Group tests with custom markers for selective running
+9. **Follow AAA pattern**: Arrange, Act, Assert structure for test clarity
+10. **Minimize test duplication**: Reuse fixtures and helper functions
+
+#### Advanced Patterns
+
+#### Factory fixtures
+
+```python
+@pytest.fixture
+def make_user():
+    def _make_user(name="John", age=30):
+        return {"name": name, "age": age}
+    return _make_user
+
+def test_user_factory(make_user):
+    user1 = make_user(name="Alice")
+    user2 = make_user(age=25)
+    assert user1["name"] == "Alice"
+    assert user2["age"] == 25
+```
+
+#### Monkeypatching
+
+```python
+def test_env_var(monkeypatch):
+    monkeypatch.setenv("API_KEY", "test_key")
+    assert os.environ["API_KEY"] == "test_key"
+
+def test_patched_function(monkeypatch):
+    def mock_read():
+        return "mocked data"
+    
+    monkeypatch.setattr("module.read_file", mock_read)
+    assert module.read_file() == "mocked data"
+```
+
+#### Autouse fixtures
+
+```python
+@pytest.fixture(autouse=True)
+def setup_database():
+    # Runs before every test
+    db.setup()
+    yield
+    # Runs after every test
+    db.teardown()
+```
+
+#### Coverage reporting
+
+```bash
+# Generate coverage report
+pytest --cov=myapp
+
+# Generate HTML report
+pytest --cov=myapp --cov-report=html
+
+# Enforce minimum coverage
+pytest --cov=myapp --cov-fail-under=90
+```
+
 ## Standard Library
 
 ### Unittest
