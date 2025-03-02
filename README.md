@@ -2069,6 +2069,411 @@ else:
     print("No match found")
 ```
 
+#### Basic Import and Usage
+
+```python
+import re
+
+# Quick check if pattern exists in string
+if re.search(r"pattern", "test string with pattern"):
+    print("Found a match!")
+
+# Find all occurrences
+matches = re.findall(r"pattern", "multiple pattern matches pattern")
+# Returns: ['pattern', 'pattern']
+
+# Replace occurrences
+new_string = re.sub(r"old", "new", "replace old with new")
+# Returns: "replace new with new"
+```
+
+#### Primary Functions
+
+```python
+# search() - Find first match, return Match object or None
+match = re.search(r"pattern", "string with pattern")
+if match:
+    print(f"Found at position {match.start()}-{match.end()}")
+
+# match() - Check if pattern matches at START of string
+start_match = re.match(r"Hello", "Hello World")  # Match
+start_match = re.match(r"World", "Hello World")  # No match
+
+# fullmatch() - Check if pattern matches ENTIRE string
+full_match = re.fullmatch(r"Hello World", "Hello World")  # Match
+full_match = re.fullmatch(r"Hello", "Hello World")  # No match
+
+# findall() - Return all non-overlapping matches as list of strings
+all_matches = re.findall(r"\d+", "Numbers: 123, 456, 789")
+# Returns: ['123', '456', '789']
+
+# finditer() - Return iterator of Match objects
+for match in re.finditer(r"\d+", "Numbers: 123, 456, 789"):
+    print(f"Found {match.group()} at {match.span()}")
+
+# split() - Split string by pattern
+parts = re.split(r",\s*", "apple, banana, cherry")
+# Returns: ['apple', 'banana', 'cherry']
+
+# sub() - Replace pattern with replacement
+result = re.sub(r"(\d+)", r"Number: \1", "Cost: 45 dollars")
+# Returns: "Cost: Number: 45 dollars"
+
+# subn() - Like sub() but returns tuple (new_string, count)
+result, count = re.subn(r"\d+", "NUM", "123 and 456")
+# Returns: ("NUM and NUM", 2)
+```
+
+#### Compilation and Flags
+
+```python
+# Compile pattern for reuse (more efficient for multiple uses)
+pattern = re.compile(r"\d+")
+matches = pattern.findall("Numbers: 123, 456")
+result = pattern.sub("NUM", "Replace 123 and 456")
+
+# Common flags
+pattern = re.compile(r"python", re.IGNORECASE)  # Case-insensitive matching
+
+# Multiple flags with bitwise OR
+pattern = re.compile(r"multi.*line", re.IGNORECASE | re.DOTALL)
+
+"""
+Available flags:
+re.IGNORECASE (re.I) - Case-insensitive matching
+re.MULTILINE (re.M) - ^ and $ match start/end of each line
+re.DOTALL (re.S) - Dot matches any char including newline
+re.VERBOSE (re.X) - Allow comments and whitespace in pattern
+re.ASCII (re.A) - \w, \b, \s, \d match only ASCII characters
+re.LOCALE (re.L) - Make \w, \b, \s, \d locale dependent (legacy)
+re.UNICODE (re.U) - Make \w, \b, \s, \d match Unicode (default in Python 3)
+"""
+
+# Inline flags in pattern
+pattern = re.compile(r"(?i)python")  # Same as re.IGNORECASE
+```
+
+#### Match Objects
+
+```python
+match = re.search(r"(\w+)@(\w+)\.(\w+)", "contact me at user@example.com")
+
+if match:
+    # Whole match
+    match.group()  # 'user@example.com'
+    match.group(0)  # Same as above
+    
+    # Accessing capturing groups
+    match.group(1)  # 'user'
+    match.group(2)  # 'example'
+    match.group(3)  # 'com'
+    
+    # Multiple groups at once
+    match.group(1, 3)  # ('user', 'com')
+    
+    # All groups as tuple
+    match.groups()  # ('user', 'example', 'com')
+    
+    # Position information
+    match.start()  # Start index of the match
+    match.end()    # End index of the match
+    match.span()   # (start, end) tuple
+    
+    # Named group
+    named_match = re.search(r"(?P<name>\w+): (?P<value>\d+)", "Age: 30")
+    named_match.group('name')   # 'Age'
+    named_match.group('value')  # '30'
+    named_match.groupdict()     # {'name': 'Age', 'value': '30'}
+```
+
+#### Character Classes and Special Sequences
+
+```python
+# Character classes
+r"[abc]"      # Match a, b, or c
+r"[a-z]"      # Match any lowercase letter
+r"[A-Z]"      # Match any uppercase letter
+r"[0-9]"      # Match any digit
+r"[a-zA-Z0-9]"# Match any alphanumeric character
+r"[^abc]"     # Match anything EXCEPT a, b, or c
+
+# Predefined character classes
+r"\d"         # Digit [0-9]
+r"\D"         # Not a digit [^0-9]
+r"\w"         # Word character [a-zA-Z0-9_]
+r"\W"         # Not a word character [^a-zA-Z0-9_]
+r"\s"         # Whitespace [ \t\n\r\f\v]
+r"\S"         # Not whitespace [^ \t\n\r\f\v]
+
+# Special characters
+r"."          # Any character except newline
+r"\."         # Literal period
+r"^"          # Start of string (or line with re.MULTILINE)
+r"$"          # End of string (or line with re.MULTILINE)
+r"\b"         # Word boundary
+r"\B"         # Not a word boundary
+r"\A"         # Start of string (regardless of re.MULTILINE)
+r"\Z"         # End of string (regardless of re.MULTILINE)
+```
+
+#### Quantifiers and Anchors
+
+```python
+# Quantifiers
+r"a*"         # Match 0 or more 'a's (greedy)
+r"a+"         # Match 1 or more 'a's (greedy)
+r"a?"         # Match 0 or 1 'a's (greedy)
+r"a{3}"       # Match exactly 3 'a's
+r"a{3,5}"     # Match 3 to 5 'a's (greedy)
+r"a{3,}"      # Match 3 or more 'a's (greedy)
+
+# Non-greedy (minimal) quantifiers
+r"a*?"        # Match 0 or more 'a's (non-greedy)
+r"a+?"        # Match 1 or more 'a's (non-greedy)
+r"a??"        # Match 0 or 1 'a's (non-greedy)
+r"a{3,5}?"    # Match 3 to 5 'a's (non-greedy)
+r"a{3,}?"     # Match 3 or more 'a's (non-greedy)
+
+# Examples
+re.findall(r"\d+", "Numbers: 123 456")      # ['123', '456']
+re.findall(r"\d+?", "Numbers: 123 456")     # ['1', '2', '3', '4', '5', '6']
+```
+
+#### Grouping and Alternation
+
+```python
+# Grouping with ()
+r"(ab)+"      # Match one or more "ab" sequences
+r"(\d{2})-(\d{2})"  # Match "12-34" and group digits
+
+# Non-capturing group
+r"(?:abc)+"   # Match one or more "abc" but don't capture
+
+# Named groups
+r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})"  # Date with named groups
+
+# Alternation with |
+r"cat|dog"    # Match "cat" or "dog"
+r"(cat|dog) food"  # Match "cat food" or "dog food"
+
+# Backreferences
+r"(\w+) \1"   # Match repeated word (e.g., "hello hello")
+r"(?P<word>\w+) (?P=word)"  # Same as above with named group
+```
+
+#### Lookahead and Lookbehind Assertions
+
+```python
+# Positive lookahead: A(?=B) matches A only if followed by B
+r"\w+(?=\s\d)"  # Match word followed by space and digit
+
+# Negative lookahead: A(?!B) matches A only if not followed by B
+r"\w+(?!\s\d)"  # Match word not followed by space and digit
+
+# Positive lookbehind: (?<=B)A matches A only if preceded by B
+r"(?<=\d\s)\w+"  # Match word preceded by digit and space
+
+# Negative lookbehind: (?<!B)A matches A only if not preceded by B
+r"(?<!\d\s)\w+"  # Match word not preceded by digit and space
+
+# Examples
+re.findall(r"\w+(?=ing)", "I am walking and running")  # ['walk', 'runn']
+re.findall(r"(?<=\$)\d+", "Items: $50, $25")  # ['50', '25']
+```
+
+#### Common Patterns
+
+```python
+# Email validation (basic)
+email_pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+
+# URL matching (basic)
+url_pattern = r"https?://(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+(?:/[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]*)?"
+
+# Phone number (US format)
+phone_pattern = r"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}"
+
+# Date (YYYY-MM-DD)
+date_pattern = r"\d{4}-\d{2}-\d{2}"
+
+# IP address
+ip_pattern = r"(?:\d{1,3}\.){3}\d{1,3}"
+
+# Strong password (at least 8 chars, mixture of uppercase, lowercase, numbers, special chars)
+password_pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+
+# Credit card number (simplified)
+cc_pattern = r"\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}"
+```
+
+#### Handling Multiline Text
+
+```python
+text = """First line
+Second line
+Third line"""
+
+# Find all lines containing "line"
+re.findall(r"^.*line.*$", text, re.MULTILINE)
+# Returns: ['First line', 'Second line', 'Third line']
+
+# Find all lines starting with "S"
+re.findall(r"^S.*$", text, re.MULTILINE)
+# Returns: ['Second line']
+
+# Match across multiple lines (including newlines)
+re.search(r"First.*Third", text, re.DOTALL).group()
+# Returns: "First line\nSecond line\nThird line"
+```
+
+#### Verbose Mode (Complex Patterns)
+
+```python
+# Regular expression for validating a hex color code
+hex_color_re = re.compile(r"""
+    \#              # Hash character
+    (?:             # Non-capturing group for the hex digits
+        [0-9A-Fa-f]{3}  # 3-digit format (#RGB)
+        |           # OR
+        [0-9A-Fa-f]{6}  # 6-digit format (#RRGGBB)
+    )
+    \b              # Word boundary
+""", re.VERBOSE)
+
+# Test the pattern
+hex_color_re.match("#FFB6C1")  # Match (6-digit)
+hex_color_re.match("#F00")     # Match (3-digit)
+hex_color_re.match("#ZZZ")     # No match (invalid hex)
+```
+
+#### Performance Tips
+
+```python
+# 1. Compile patterns that are used multiple times
+pattern = re.compile(r"\d+")
+
+# 2. Use non-capturing groups (?:...) when capture isn't needed
+re.findall(r"(?:\d+)-(?:\d+)", "123-456 789-012")  # ['123-456', '789-012']
+
+# 3. Be specific with character classes
+# Instead of:
+re.findall(r".*", "hello")  # ['hello', '']
+# Use:
+re.findall(r"[a-z]+", "hello")  # ['hello']
+
+# 4. Avoid unnecessary backtracking
+# Instead of:
+re.search(r"a.*b.*c", long_string)
+# Use:
+re.search(r"a[^c]*b[^c]*c", long_string)
+
+# 5. Use atomic groups or possessive quantifiers when available
+# 6. Be careful with nested quantifiers (a+)+ - can cause catastrophic backtracking
+```
+
+#### Common Mistakes and Solutions
+
+```python
+# Mistake: Not escaping special characters
+re.search(r"1.2", "1.2")  # Matches "1" + any char + "2"
+# Solution:
+re.search(r"1\.2", "1.2")  # Matches literal "1.2"
+
+# Mistake: Greedy vs. non-greedy quantifiers
+re.search(r"<.*>", "<tag>value</tag>").group()  # '<tag>value</tag>'
+# Solution:
+re.search(r"<.*?>", "<tag>value</tag>").group()  # '<tag>'
+
+# Mistake: Word boundaries
+re.sub(r"cat", "dog", "cats and cat")  # "dogs and dog" (partial matches)
+# Solution:
+re.sub(r"\bcat\b", "dog", "cats and cat")  # "cats and dog" (whole word only)
+
+# Mistake: Capture groups in findall
+re.findall(r"(\d+)-(\d+)", "123-456")  # [('123', '456')] (tuples of groups)
+# Solution (if you want full matches):
+re.findall(r"\d+-\d+", "123-456")  # ['123-456']
+
+# Mistake: Not handling None from search() or match()
+match = re.search(r"pattern", string)
+match.group()  # AttributeError if no match
+# Solution:
+if match:
+    result = match.group()
+```
+
+#### Raw Strings vs. Regular Strings
+
+```python
+# Problem: Backslashes in regular strings
+pattern = "\\d+"  # Need double backslash
+
+# Solution: Use raw strings for regexes
+pattern = r"\d+"  # Cleaner, less error-prone
+
+# Compare:
+print("\\\\")  # Prints: \\
+print(r"\\")   # Prints: \\
+```
+
+#### Python-Specific Behaviors
+
+```python
+# Default is Unicode mode in Python 3
+re.search(r"\w+", "Привет")  # Matches non-ASCII characters
+
+# Using ASCII flag for legacy behavior
+re.search(r"\w+", "Привет", re.ASCII)  # No match
+
+# Escape sequences in string literals vs. regex patterns
+print("\t")       # Prints a tab character
+print(r"\t")      # Prints literal "\t"
+re.search("\t", "a\tb")   # Matches a tab character
+re.search(r"\t", "a\tb")  # Same as above
+```
+
+#### Debugging Regular Expressions
+
+```python
+import re
+
+def debug_regex(pattern, string):
+    """Helper function to debug regular expressions"""
+    compiled = re.compile(pattern)
+    
+    print(f"Pattern: {pattern}")
+    print(f"String: {string}")
+    
+    # Check if the pattern matches at the start
+    match_result = compiled.match(string)
+    print(f"match(): {'Success' if match_result else 'No match'}")
+    if match_result:
+        print(f"  span: {match_result.span()}")
+        print(f"  groups: {match_result.groups()}")
+    
+    # Check if the pattern is found anywhere
+    search_result = compiled.search(string)
+    print(f"search(): {'Success' if search_result else 'No match'}")
+    if search_result:
+        print(f"  span: {search_result.span()}")
+        print(f"  groups: {search_result.groups()}")
+    
+    # Find all occurrences
+    findall_result = compiled.findall(string)
+    print(f"findall(): {findall_result}")
+    
+    # Split by pattern
+    split_result = compiled.split(string)
+    print(f"split(): {split_result}")
+    
+    # Replace pattern
+    sub_result = compiled.sub("REPLACED", string)
+    print(f"sub(): {sub_result}")
+
+# Example usage
+debug_regex(r"(\d+)", "abc123def456")
+```
+
 
 ### Web protocol and data handling
 ### JSON Package
