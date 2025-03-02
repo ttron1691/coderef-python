@@ -652,6 +652,448 @@ user = User(id=1, name="Alice", age=25, email="alice@example.com", employment_st
 user.dict()
 ```
 
+# Python Pydantic Reference Card
+
+## Basic Usage
+
+### Installation
+```python
+pip install pydantic
+```
+
+### Simple Model
+```python
+from pydantic import BaseModel
+
+class User(BaseModel):
+    id: int
+    name: str
+    email: str
+    active: bool = True  # Default value
+```
+
+### Type Validation
+```python
+user = User(id=1, name="John Doe", email="john@example.com")  # Valid
+user = User(id="1", name="John Doe", email="john@example.com")  # Coerces "1" to int(1)
+
+try:
+    User(id="not-an-int", name="John Doe", email="john@example.com")
+except:
+    print("Validation error: id must be an integer")
+```
+
+### Model Methods
+```python
+# Dictionary conversion
+user_dict = user.model_dump()  # In v2+, was .dict() in v1
+user_json = user.model_dump_json()  # In v2+, was .json() in v1
+
+# Copy and update
+user2 = user.model_copy(update={"name": "Jane Doe"})  # In v2+, was .copy() in v1
+```
+
+## Field Types and Validation
+
+### Common Types
+```python
+from datetime import datetime
+from typing import List, Dict, Optional, Union
+from uuid import UUID
+from pydantic import BaseModel, EmailStr, HttpUrl, conint, confloat
+
+class AdvancedUser(BaseModel):
+    id: int
+    name: str
+    email: EmailStr  # Validates email format
+    website: HttpUrl  # Validates URL format
+    tags: List[str] = []
+    metadata: Dict[str, str] = {}
+    last_login: Optional[datetime] = None
+    score: Union[int, float] = 0.0
+    age: conint(ge=0, lt=120)  # Constrained integer
+    rating: confloat(ge=0, le=5)  # Constrained float
+    user_id: UUID  # UUID validation
+```
+
+### Field Configuration
+```python
+from pydantic import BaseModel, Field
+
+class Product(BaseModel):
+    id: int
+    name: str = Field(..., min_length=3, max_length=50)
+    price: float = Field(gt=0, description="Price must be positive")
+    description: Optional[str] = Field(
+        None,
+        title="Product description",
+        max_length=1000,
+        examples=["A great product"]
+    )
+    sku: str = Field(regex=r"^[A-Z]{3}-\d{4}$")
+```
+
+## Advanced Validation
+
+### Validators
+```python
+from pydantic import BaseModel, field_validator, model_validator
+
+class Order(BaseModel):
+    id: int
+    items: List[str]
+    total: float
+    
+    # Field validator (single field)
+    @field_validator('items')
+    def check_items_not_empty(cls, v):
+        if not v:
+            raise ValueError('Order must have at least one item')
+        return v
+    
+    # Model validator (multiple fields)
+    @model_validator(mode='after')
+    def check_total(self):
+        if len(self.items) > 5 and self.total < 100:
+            raise ValueError('Large orders should have higher total')
+        return self
+```
+
+### Custom Types
+```python
+from pydantic import BaseModel, GetCoreSchemaHandler
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import CoreSchema, core_schema
+
+class ISBN10:
+    def __init__(self, value: str):
+        if not self._is_valid(value):
+            raise ValueError(f"Invalid ISBN-10: {value}")
+        self.value = value
+        
+    @staticmethod
+    def _is_valid(value: str) -> bool:
+        # Simple validation for example
+        return len(value) == 10
+        
+    def __repr__(self) -> str:
+        return f"ISBN10({self.value!r})"
+        
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, _source_type, _handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        return core_schema.with_info_plain_validator_function(
+            cls._validate,
+            serialization=core_schema.str_serializer(),
+            type=cls,
+        )
+    
+    @classmethod
+    def _validate(cls, value, info):
+        if isinstance(value, cls):
+            return value
+        if isinstance(value, str):
+            return cls(value)
+        raise ValueError(f"Cannot convert {value} to {cls.__name__}")
+
+class Book(BaseModel):
+    title: str
+    isbn: ISBN10
+```
+
+## Nested Models
+
+### Model Composition
+```python
+from pydantic import BaseModel
+from typing import List
+
+class Address(BaseModel):
+    street: str
+    city: str
+    country: str
+    postal_code: str
+
+class User(BaseModel):
+    id: int
+    name: str
+    addresses: List[Address]
+
+# Usage
+user = User(
+    id=1,
+    name="John",
+    addresses=[
+        {"street": "123 Main St", "city": "New York", "country": "USA", "postal_code": "10001"},
+        {"street": "456 Park Ave", "city": "Boston", "country": "USA", "postal_code": "02108"}
+    ]
+)
+```
+
+### Recursive Models
+```python
+from pydantic import BaseModel
+from typing import List, Optional
+
+class Comment(BaseModel):
+    id: int
+    text: str
+    replies: List['Comment'] = []
+
+Comment.model_rebuild()  # Required for recursive models in v2
+```
+
+## Config and Settings
+
+### Model Config
+```python
+from pydantic import BaseModel, ConfigDict
+from datetime import datetime
+
+class User(BaseModel):
+    model_config = ConfigDict(
+        extra='forbid',  # Raise error if extra fields provided
+        str_strip_whitespace=True,  # Strip whitespace from strings
+        validate_assignment=True,  # Validate attributes on assignment
+        frozen=False,  # If True, models are immutable
+        populate_by_name=True,  # Allow population by field name and alias
+        json_schema_extra={
+            'examples': [
+                {
+                    'id': 123,
+                    'name': 'John Doe',
+                    'signup_ts': '2020-01-01T00:00:00Z'
+                }
+            ]
+        }
+    )
+    
+    id: int
+    name: str
+    signup_ts: datetime
+```
+
+### Settings Management
+```python
+from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings
+from typing import Optional
+
+class DatabaseSettings(BaseModel):
+    host: str
+    port: int
+    user: str
+    password: str
+    
+class AppSettings(BaseSettings):
+    app_name: str = "My App"
+    debug: bool = False
+    db: DatabaseSettings
+    log_level: str = Field('INFO', env='LOG_LEVEL')
+    
+    model_config = {
+        'env_nested_delimiter': '__',
+        'env_file': '.env',
+        'env_file_encoding': 'utf-8',
+        'env_prefix': 'MYAPP_',
+    }
+
+# Usage
+# Environment variables like:
+# MYAPP_APP_NAME=MyApp
+# MYAPP_DB__HOST=localhost
+settings = AppSettings()
+```
+
+## Serialization & Deserialization
+
+### JSON Schema Generation
+```python
+from pydantic import BaseModel
+from typing import List
+
+class Item(BaseModel):
+    name: str
+    price: float
+
+class Order(BaseModel):
+    id: int
+    items: List[Item]
+
+# Generate JSON schema
+schema = Order.model_json_schema()
+print(schema)
+```
+
+### Custom Serialization
+```python
+from pydantic import BaseModel, field_serializer, field_validator
+from datetime import datetime
+import json
+
+class LogEntry(BaseModel):
+    timestamp: datetime
+    level: str
+    message: str
+
+    @field_serializer('timestamp')
+    def serialize_timestamp(self, value):
+        return value.strftime("%Y-%m-%d %H:%M:%S")
+        
+    @field_serializer('level')
+    def serialize_level(self, value):
+        return value.upper()
+```
+
+### Computed Fields
+```python
+from pydantic import BaseModel, computed_field
+from typing import List
+
+class Order(BaseModel):
+    items: List[dict]
+    tax_rate: float = 0.1
+    
+    @computed_field
+    def subtotal(self) -> float:
+        return sum(item.get('price', 0) for item in self.items)
+        
+    @computed_field
+    def tax(self) -> float:
+        return self.subtotal * self.tax_rate
+        
+    @computed_field
+    def total(self) -> float:
+        return self.subtotal + self.tax
+```
+
+## Best Practices
+
+### Error Handling
+```python
+from pydantic import BaseModel, ValidationError
+
+class User(BaseModel):
+    id: int
+    email: str
+
+try:
+    user = User(id="not-an-int", email="invalid-email")
+except ValidationError as e:
+    print(f"Validation errors: {e.errors()}")
+    # Access specific errors
+    for error in e.errors():
+        print(f"Field: {error['loc'][0]}, Error: {error['msg']}")
+```
+
+### Type Annotations
+```python
+# Prefer these imports for better type checking
+from typing import Dict, List, Optional, Union, Any, Literal
+from pydantic import BaseModel
+
+# Use specific types when possible
+class Config(BaseModel):
+    mode: Literal["development", "testing", "production"]
+    flags: Dict[str, bool]
+    counts: Dict[str, int]
+    # Avoid using Any when possible
+    # metadata: Dict[str, Any]  # Less ideal
+    metadata: Dict[str, Union[str, int, bool]]  # Better
+```
+
+### Performance Tips
+```python
+from pydantic import BaseModel, Field, model_validator
+
+# 1. Use validators sparingly - they impact performance
+class EfficientModel(BaseModel):
+    # 2. Use default values where appropriate
+    count: int = 0
+    
+    # 3. Use Field constraints instead of validators when possible
+    name: str = Field(..., min_length=2, max_length=50)
+    
+    # 4. For complex validation, use model_validator instead of multiple field validators
+    @model_validator(mode='after')
+    def validate_model(self):
+        # Validate related fields together
+        return self
+```
+
+## Pydantic v2 Features
+
+### Schema Modes
+```python
+from pydantic import BaseModel
+
+class User(BaseModel):
+    model_config = {
+        # Choose validation strictness mode
+        'strict': False,  # Coerce types when possible (default)
+        # 'strict': True,  # Strict type checking, no coercion
+    }
+    id: int
+    name: str
+```
+
+### RootModel
+```python
+from pydantic import RootModel
+from typing import List, Dict
+
+# For when your model is just a container for a single value
+IntList = RootModel[List[int]]
+numbers = IntList([1, 2, 3])
+print(numbers.root)  # [1, 2, 3]
+print(numbers.model_dump())  # [1, 2, 3]
+
+# For mapping types
+UserDict = RootModel[Dict[str, str]]
+users = UserDict({"admin": "John", "user1": "Jane"})
+```
+
+### Type Adapters
+```python
+from pydantic import TypeAdapter
+from typing import List
+
+# Validate without creating a model class
+IntListValidator = TypeAdapter(List[int])
+validated = IntListValidator.validate_python(["1", "2", "3"])  # [1, 2, 3]
+
+# JSON parsing
+json_data = '[1, 2, "3"]'
+validated_json = IntListValidator.validate_json(json_data)
+```
+
+## Testing with Pydantic
+
+### Schema Tests
+```python
+from pydantic import BaseModel, Field
+import pytest
+
+class Product(BaseModel):
+    id: int
+    name: str = Field(..., min_length=3)
+    price: float = Field(..., gt=0)
+
+def test_valid_product():
+    product = Product(id=1, name="Test Product", price=19.99)
+    assert product.id == 1
+    assert product.name == "Test Product"
+    assert product.price == 19.99
+
+def test_invalid_product():
+    with pytest.raises(ValueError):
+        Product(id=1, name="TS", price=19.99)  # Name too short
+    
+    with pytest.raises(ValueError):
+        Product(id=1, name="Test Product", price=-5)  # Negative price
+```
+
 ### Pytest
 Pytest is a robust testing framework for Python known for its  simple syntax, scalability, and powerful features like fixtures, parameterization, and plugins.
 
