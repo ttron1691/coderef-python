@@ -1477,6 +1477,561 @@ pytest --cov=myapp --cov-fail-under=90
 
 ### Unittest
 
+```bash
+# unittest is part of the Python standard library - no installation needed!
+
+# For mocking (pre-Python 3.3)
+pip install mock  # Not needed for Python 3.3+, as unittest.mock is included
+```
+
+#### Basic Test Structure
+
+```python
+import unittest
+
+class TestExample(unittest.TestCase):
+    def test_simple_assertion(self):
+        self.assertEqual(1 + 1, 2)
+    
+    def test_with_message(self):
+        self.assertEqual(1, 1, "This message shows when the test fails")
+```
+
+#### Running Tests
+
+```bash
+# Run a test file
+python -m unittest test_example.py
+
+# Run a specific test class
+python -m unittest test_example.TestExample
+
+# Run a specific test method
+python -m unittest test_example.TestExample.test_simple_assertion
+
+# Run with discovery (finds all tests)
+python -m unittest discover
+
+# Run with discovery in a specific directory
+python -m unittest discover -s tests
+
+# Run with discovery following a specific pattern
+python -m unittest discover -s tests -p "*_test.py"
+
+# Run with verbose output
+python -m unittest -v
+```
+
+#### Test Organization
+
+```python
+import unittest
+
+# Setup and teardown
+class TestWithSetup(unittest.TestCase):
+    def setUp(self):
+        # Runs before each test
+        self.value = 10
+    
+    def tearDown(self):
+        # Runs after each test
+        pass
+    
+    @classmethod
+    def setUpClass(cls):
+        # Runs once before all tests in the class
+        cls.shared_resource = open("test_file.txt", "w")
+    
+    @classmethod
+    def tearDownClass(cls):
+        # Runs once after all tests in the class
+        cls.shared_resource.close()
+        
+    def test_value(self):
+        self.assertEqual(self.value, 10)
+```
+
+#### Assertions
+
+```python
+def test_assertions(self):
+    # Equality
+    self.assertEqual(expected, actual)
+    self.assertNotEqual(expected, actual)
+    
+    # Identity
+    self.assertIs(expected, actual)  # Checks if objects are the same (is)
+    self.assertIsNot(expected, actual)
+    
+    # Boolean checks
+    self.assertTrue(expression)
+    self.assertFalse(expression)
+    
+    # None checks
+    self.assertIsNone(value)
+    self.assertIsNotNone(value)
+    
+    # Type checks
+    self.assertIsInstance(obj, cls)
+    self.assertNotIsInstance(obj, cls)
+    
+    # Membership checks
+    self.assertIn(member, container)
+    self.assertNotIn(member, container)
+    
+    # String checks
+    self.assertRegex(string, regex)
+    self.assertNotRegex(string, regex)
+    
+    # Numeric comparisons
+    self.assertAlmostEqual(first, second, places=7)  # For floating point
+    self.assertNotAlmostEqual(first, second, places=7)
+    self.assertGreater(a, b)
+    self.assertGreaterEqual(a, b)
+    self.assertLess(a, b)
+    self.assertLessEqual(a, b)
+    
+    # Container comparisons
+    self.assertCountEqual(first, second)  # Same elements, any order
+    self.assertSequenceEqual(first, second)  # Same sequence, same order
+    self.assertListEqual(first, second)
+    self.assertTupleEqual(first, second)
+    self.assertSetEqual(first, second)
+    self.assertDictEqual(first, second)
+    
+    # Exception checks
+    with self.assertRaises(SomeException):
+        function_that_raises()
+        
+    # Context-specific checks
+    with self.assertRaises(SomeException) as context:
+        function_that_raises()
+    self.assertEqual(str(context.exception), "Expected message")
+    
+    # Output checks
+    with self.assertLogs(logger, level='INFO') as cm:
+        logger.info("Test log message")
+    self.assertEqual(len(cm.output), 1)
+    
+    # Warnings check
+    with self.assertWarns(DeprecationWarning):
+        function_with_warning()
+```
+
+#### Skipping Tests and Expected Failures
+
+```python
+class TestSkipping(unittest.TestCase):
+    @unittest.skip("Skipping this test for now")
+    def test_skipped(self):
+        pass
+        
+    @unittest.skipIf(sys.version_info < (3, 8), "Requires Python 3.8+")
+    def test_conditional_skip(self):
+        pass
+        
+    @unittest.skipUnless(sys.platform == "win32", "Windows only test")
+    def test_windows_only(self):
+        pass
+        
+    @unittest.expectedFailure
+    def test_known_bug(self):
+        self.assertEqual(1, 2)  # This is expected to fail
+```
+
+#### Subtest - Running Variations Within a Test
+
+```python
+def test_with_subtests(self):
+    test_cases = [
+        (1, 1, 2),
+        (2, 2, 4),
+        (3, 3, 6)
+    ]
+    
+    for a, b, expected in test_cases:
+        with self.subTest(a=a, b=b):
+            self.assertEqual(a + b, expected)
+```
+
+#### Testing Exceptions
+
+```python
+def test_exception(self):
+    # Basic exception check
+    with self.assertRaises(ValueError):
+        int("not an integer")
+    
+    # Advanced exception check with context
+    with self.assertRaises(ValueError) as context:
+        int("not an integer")
+    self.assertIn("invalid literal", str(context.exception))
+```
+
+#### Mock Objects
+
+```python
+import unittest
+from unittest import mock
+from unittest.mock import patch, MagicMock, Mock, call
+
+class TestMocking(unittest.TestCase):
+    def test_mock_function(self):
+        # Creating a mock
+        mock_func = Mock()
+        mock_func.return_value = 42
+        
+        # Using the mock
+        result = mock_func()
+        
+        # Assertions
+        self.assertEqual(result, 42)
+        mock_func.assert_called_once()
+        
+    def test_mock_with_side_effect(self):
+        # Mock with side effects
+        mock_func = Mock(side_effect=[1, 2, 3])
+        
+        # Each call returns the next item
+        self.assertEqual(mock_func(), 1)
+        self.assertEqual(mock_func(), 2)
+        self.assertEqual(mock_func(), 3)
+        
+    def test_mock_raising_exception(self):
+        # Mock that raises an exception
+        mock_func = Mock(side_effect=ValueError("Invalid input"))
+        
+        with self.assertRaises(ValueError):
+            mock_func()
+    
+    @patch('module_to_test.function_to_mock')
+    def test_with_patch_decorator(self, mock_function):
+        # Setup the mock
+        mock_function.return_value = "mocked result"
+        
+        # Call the function that uses the now-mocked dependency
+        from module_to_test import my_function
+        result = my_function()
+        
+        # Assertions
+        self.assertEqual(result, "mocked result")
+        mock_function.assert_called_once()
+    
+    def test_with_patch_context_manager(self):
+        with patch('module_to_test.function_to_mock') as mock_function:
+            mock_function.return_value = "mocked result"
+            
+            from module_to_test import my_function
+            result = my_function()
+            
+            self.assertEqual(result, "mocked result")
+            
+    def test_multiple_patches(self):
+        with patch('module.func1') as mock1, \
+             patch('module.func2') as mock2:
+            # Both function calls are mocked
+            pass
+    
+    def test_mock_class(self):
+        with patch('module.MyClass') as MockClass:
+            # Configure the instance returned when MyClass is instantiated
+            instance = MockClass.return_value
+            instance.method.return_value = "mocked method result"
+            
+            from module import code_that_uses_my_class
+            result = code_that_uses_my_class()
+            
+            self.assertEqual(result, "mocked method result")
+    
+    def test_mock_object_attributes(self):
+        mock_obj = Mock()
+        mock_obj.attribute = "value"
+        mock_obj.method.return_value = 42
+        
+        self.assertEqual(mock_obj.attribute, "value")
+        self.assertEqual(mock_obj.method(), 42)
+    
+    def test_assert_mock_calls(self):
+        mock_func = Mock()
+        
+        # Make some calls
+        mock_func(1, 2)
+        mock_func.method("a", b="b")
+        
+        # Check call count
+        self.assertEqual(mock_func.call_count, 1)
+        self.assertEqual(mock_func.method.call_count, 1)
+        
+        # Check call arguments
+        mock_func.assert_called_with(1, 2)
+        mock_func.method.assert_called_with("a", b="b")
+        
+        # Check call history
+        expected_calls = [call(1, 2)]
+        self.assertEqual(mock_func.mock_calls, expected_calls)
+    
+    def test_mock_spec(self):
+        # Mock with specification (only allows existing attributes)
+        class Person:
+            def __init__(self, name):
+                self.name = name
+            
+            def greet(self):
+                return f"Hello, I'm {self.name}"
+        
+        # Create a mock with the spec
+        mock_person = Mock(spec=Person)
+        mock_person.name = "John"
+        mock_person.greet.return_value = "Mocked greeting"
+        
+        # This works fine
+        self.assertEqual(mock_person.name, "John")
+        self.assertEqual(mock_person.greet(), "Mocked greeting")
+        
+        # This would raise AttributeError because 'dance' is not in the spec
+        # mock_person.dance()
+    
+    def test_magic_mock(self):
+        # MagicMock is like Mock but handles magic methods
+        magic = MagicMock()
+        magic.__len__.return_value = 42
+        
+        self.assertEqual(len(magic), 42)
+```
+
+#### Advanced Mocking Techniques
+
+```python
+class TestAdvancedMocking(unittest.TestCase):
+    def test_mocking_context_manager(self):
+        # Mock a context manager
+        mock_context = MagicMock()
+        mock_context.__enter__.return_value = "resource"
+        
+        with mock_context as resource:
+            self.assertEqual(resource, "resource")
+        
+        mock_context.__enter__.assert_called_once()
+        mock_context.__exit__.assert_called_once()
+    
+    def test_mock_with_autospec(self):
+        # autospec creates a mock that validates attribute access
+        # and method signatures based on the spec object
+        def function(a, b, c):
+            return a + b + c
+        
+        mock_func = mock.create_autospec(function)
+        mock_func.return_value = 42
+        
+        result = mock_func(1, 2, 3)
+        self.assertEqual(result, 42)
+        
+        # This would raise TypeError due to wrong number of arguments
+        # mock_func(1, 2)
+    
+    def test_mock_property(self):
+        class MyClass:
+            @property
+            def prop(self):
+                return "value"
+        
+        # Mock the property
+        with patch.object(MyClass, 'prop', new_callable=mock.PropertyMock) as mock_prop:
+            mock_prop.return_value = "mocked value"
+            
+            obj = MyClass()
+            self.assertEqual(obj.prop, "mocked value")
+    
+    def test_mock_builtin(self):
+        # Mocking built-in functions
+        with patch('builtins.open', mock.mock_open(read_data="mocked file content")) as mock_file:
+            with open("file_path.txt", "r") as file:
+                content = file.read()
+            
+            self.assertEqual(content, "mocked file content")
+            mock_file.assert_called_once_with("file_path.txt", "r")
+    
+    def test_mock_chained_calls(self):
+        # Mocking chained method calls
+        mock_obj = Mock()
+        mock_obj.method1.return_value.method2.return_value.method3.return_value = "result"
+        
+        result = mock_obj.method1().method2().method3()
+        self.assertEqual(result, "result")
+    
+    def test_patch_dict(self):
+        # Temporarily modify a dictionary
+        original = {'key': 'original_value'}
+        
+        with patch.dict(original, {'key': 'new_value'}, clear=False):
+            self.assertEqual(original['key'], 'new_value')
+        
+        # Original value is restored after the context manager
+        self.assertEqual(original['key'], 'original_value')
+```
+
+#### Test Suites
+
+```python
+def create_test_suite():
+    # Create a test suite manually
+    suite = unittest.TestSuite()
+    
+    # Add test classes
+    suite.addTest(unittest.makeSuite(TestExample))
+    suite.addTest(unittest.makeSuite(TestMocking))
+    
+    # Add individual test methods
+    suite.addTest(TestExample('test_simple_assertion'))
+    
+    return suite
+
+if __name__ == '__main__':
+    # Run the suite
+    runner = unittest.TextTestRunner()
+    runner.run(create_test_suite())
+```
+
+#### Test Runners
+
+```python
+import unittest
+
+if __name__ == '__main__':
+    # Basic test runner
+    unittest.main()
+    
+    # Test runner with more options
+    unittest.main(verbosity=2, failfast=True)
+```
+
+#### Load Tests from Multiple Modules
+
+```python
+import unittest
+
+# Load all tests from specified modules
+from test_module1 import *
+from test_module2 import *
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+#### Best Practices
+
+1. **Test method naming**: Begin with `test_` and use descriptive names that explain what is being tested
+2. **Isolation**: Each test should be independent and not rely on other tests
+3. **Arrange-Act-Assert**: Structure tests into setup, action, and verification phases
+4. **Keep tests small**: Test one specific functionality per test method
+5. **Use setUp and tearDown**: For common initialization and cleanup code
+6. **Mock external dependencies**: Isolate your code from external systems
+7. **Focus on behavior**: Test what methods do, not their implementation details
+8. **Consistent assertions**: Use the most specific assertion for the condition
+9. **Test edge cases**: Boundary conditions, empty inputs, error conditions
+10. **Use subTest**: For variations of the same test with different inputs
+
+#### Common Mocking Patterns
+
+#### Mocking Database Access
+
+```python
+def test_database_access(self):
+    # Create mock for database connection
+    mock_conn = Mock()
+    mock_cursor = Mock()
+    mock_conn.cursor.return_value = mock_cursor
+    
+    # Configure cursor behavior
+    mock_cursor.execute.return_value = None
+    mock_cursor.fetchall.return_value = [{'id': 1, 'name': 'Test'}]
+    
+    # Use patch to replace actual database connection
+    with patch('module.get_database_connection', return_value=mock_conn):
+        # Call the function that uses database
+        from module import get_user_data
+        result = get_user_data(user_id=1)
+        
+        # Verify correct SQL was executed
+        mock_cursor.execute.assert_called_with("SELECT * FROM users WHERE id = ?", (1,))
+        self.assertEqual(result, [{'id': 1, 'name': 'Test'}])
+```
+
+#### Mocking HTTP Requests
+
+```python
+def test_api_client(self):
+    # Mock the requests.get function
+    mock_response = Mock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {'data': 'test_data'}
+    
+    with patch('requests.get', return_value=mock_response) as mock_get:
+        # Call function that makes the request
+        from api_client import get_data
+        result = get_data('https://api.example.com/data')
+        
+        # Verify the request was made correctly
+        mock_get.assert_called_once_with('https://api.example.com/data')
+        self.assertEqual(result, {'data': 'test_data'})
+```
+
+#### Mocking File Operations
+
+```python
+def test_file_reading(self):
+    # Use mock_open helper to mock file operations
+    file_content = "line1\nline2\nline3"
+    mock_open = mock.mock_open(read_data=file_content)
+    
+    with patch('builtins.open', mock_open):
+        # Call function that reads file
+        from file_utils import count_lines
+        result = count_lines('dummy_file.txt')
+        
+        # Verify file was opened correctly
+        mock_open.assert_called_once_with('dummy_file.txt', 'r')
+        self.assertEqual(result, 3)
+```
+
+#### Mocking Time
+
+```python
+def test_time_dependent_function(self):
+    # Mock the time.time function
+    fixed_time = 1609459200  # 2021-01-01 00:00:00
+    
+    with patch('time.time', return_value=fixed_time):
+        # Call function that depends on current time
+        from time_utils import get_timestamp
+        result = get_timestamp()
+        
+        self.assertEqual(result, fixed_time)
+```
+
+#### Partial Mocking
+
+```python
+def test_partial_mock(self):
+    # Only mock specific method in a class
+    class Calculator:
+        def add(self, a, b):
+            return a + b
+            
+        def multiply(self, a, b):
+            return a * b
+    
+    calc = Calculator()
+    
+    # Only mock the multiply method
+    with patch.object(calc, 'multiply', return_value=100):
+        # Original method works normally
+        self.assertEqual(calc.add(2, 3), 5)
+        
+        # Mocked method returns mock value
+        self.assertEqual(calc.multiply(5, 5), 100)
+```
+
 ### Regular expressions
 The Python ```re``` package is used for working with regular expressions (regex). In particular, this allows to match, search, and manipulate
 strings based on patterns
